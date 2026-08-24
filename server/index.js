@@ -1,94 +1,83 @@
 import "dotenv/config";
-
 import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-
 import express from "express";
 import cors from "cors";
 import bcrypt from "bcryptjs";
 import { Server } from "socket.io";
 
 import { prisma } from "./db.js";
-import {
-  signToken,
-  verifyToken,
-  authRequired
-} from "./auth.js";
-
+import { signToken, verifyToken, authRequired } from "./auth.js";
 import {
   createGameState,
   addPlayer,
   rollDice,
   applyMove,
-  publicState
+  publicState,
 } from "./game.js";
-
 import { runAiTurn } from "./ai.js";
 
-const __dirname = path.dirname(
-  fileURLToPath(import.meta.url)
-);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const server = http.createServer(app);
 
 const port = Number(process.env.PORT || 10000);
-
 const clientUrl =
   process.env.CLIENT_URL || "http://localhost:5173";
 
 app.use(
   cors({
     origin: clientUrl,
-    credentials: true
+    credentials: true,
   })
 );
 
 app.use(express.json({ limit: "100kb" }));
 
+/* =========================================================
+   HEALTH
+========================================================= */
+
 app.get("/health", (_, res) => {
   res.json({
     ok: true,
-    service: "ludo-online"
+    service: "ludo-online",
   });
 });
 
-/* =========================
+/* =========================================================
    AUTH
-========================= */
+========================================================= */
 
 app.post("/api/auth/signup", async (req, res) => {
   try {
-    const username = String(
-      req.body.username || ""
-    ).trim();
+    const username = String(req.body.username || "")
+      .trim();
 
-    const email = String(
-      req.body.email || ""
-    ).trim().toLowerCase();
+    const email = String(req.body.email || "")
+      .trim()
+      .toLowerCase();
 
-    const password = String(
-      req.body.password || ""
-    );
+    const password = String(req.body.password || "");
 
     if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
       return res.status(400).json({
         error:
-          "Username must be 3-20 letters, numbers or underscores."
+          "Username must be 3-20 letters, numbers or underscores.",
       });
     }
 
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       return res.status(400).json({
-        error: "Enter a valid email."
+        error: "Enter a valid email.",
       });
     }
 
     if (password.length < 8) {
       return res.status(400).json({
-        error:
-          "Password must be at least 8 characters."
+        error: "Password must be at least 8 characters.",
       });
     }
 
@@ -96,61 +85,55 @@ app.post("/api/auth/signup", async (req, res) => {
       where: {
         OR: [
           { username },
-          { email }
-        ]
-      }
+          { email },
+        ],
+      },
     });
 
     if (exists) {
       return res.status(409).json({
-        error:
-          "Username or email already exists."
+        error: "Username or email already exists.",
       });
     }
 
-    const passwordHash =
-      await bcrypt.hash(password, 12);
+    const passwordHash = await bcrypt.hash(password, 12);
 
-    const user =
-      await prisma.user.create({
-        data: {
-          username,
-          email,
-          passwordHash
-        }
-      });
+    const user = await prisma.user.create({
+      data: {
+        username,
+        email,
+        passwordHash,
+      },
+    });
 
     res.status(201).json({
       token: signToken(user),
       user: {
         id: user.id,
         username: user.username,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
   } catch (error) {
     console.error("SIGNUP ERROR:", error);
 
     res.status(500).json({
-      error: "Could not create account."
+      error: "Could not create account.",
     });
   }
 });
 
 app.post("/api/auth/login", async (req, res) => {
   try {
-    const email = String(
-      req.body.email || ""
-    ).trim().toLowerCase();
+    const email = String(req.body.email || "")
+      .trim()
+      .toLowerCase();
 
-    const password = String(
-      req.body.password || ""
-    );
+    const password = String(req.body.password || "");
 
-    const user =
-      await prisma.user.findUnique({
-        where: { email }
-      });
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
 
     if (
       !user ||
@@ -160,8 +143,7 @@ app.post("/api/auth/login", async (req, res) => {
       ))
     ) {
       return res.status(401).json({
-        error:
-          "Invalid email or password."
+        error: "Invalid email or password.",
       });
     }
 
@@ -170,14 +152,14 @@ app.post("/api/auth/login", async (req, res) => {
       user: {
         id: user.id,
         username: user.username,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
   } catch (error) {
     console.error("LOGIN ERROR:", error);
 
     res.status(500).json({
-      error: "Login failed."
+      error: "Login failed.",
     });
   }
 });
@@ -186,31 +168,39 @@ app.get(
   "/api/me",
   authRequired,
   async (req, res) => {
-    const user =
-      await prisma.user.findUnique({
-        where: {
-          id: req.auth.sub
-        },
-        select: {
-          id: true,
-          username: true,
-          email: true
-        }
-      });
+    try {
+      const user =
+        await prisma.user.findUnique({
+          where: {
+            id: req.auth.sub,
+          },
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        });
 
-    if (!user) {
-      return res.status(404).json({
-        error: "User not found."
+      if (!user) {
+        return res.status(404).json({
+          error: "User not found.",
+        });
+      }
+
+      res.json({ user });
+    } catch (error) {
+      console.error("ME ERROR:", error);
+
+      res.status(500).json({
+        error: "Could not load user.",
       });
     }
-
-    res.json({ user });
   }
 );
 
-/* =========================
+/* =========================================================
    ROOMS
-========================= */
+========================================================= */
 
 const rooms = new Map();
 
@@ -235,12 +225,12 @@ function randomCode() {
 async function saveRoom(room) {
   await prisma.game.update({
     where: {
-      id: room.dbId
+      id: room.dbId,
     },
     data: {
       state: room.state,
-      status: room.state.status
-    }
+      status: room.state.status,
+    },
   });
 }
 
@@ -252,15 +242,17 @@ async function getRoom(code) {
   const game =
     await prisma.game.findUnique({
       where: {
-        roomCode: code
-      }
+        roomCode: code,
+      },
     });
 
-  if (!game) return null;
+  if (!game) {
+    return null;
+  }
 
   const room = {
     dbId: game.id,
-    state: game.state
+    state: game.state,
   };
 
   rooms.set(code, room);
@@ -268,20 +260,24 @@ async function getRoom(code) {
   return room;
 }
 
-/* =========================
+/* =========================================================
    SOCKET.IO
-========================= */
+========================================================= */
 
 const io = new Server(server, {
   cors: {
     origin: clientUrl,
-    credentials: true
+    credentials: true,
   },
   transports: [
     "websocket",
-    "polling"
-  ]
+    "polling",
+  ],
 });
+
+/* =========================================================
+   SOCKET AUTH
+========================================================= */
 
 io.use((socket, next) => {
   try {
@@ -290,14 +286,11 @@ io.use((socket, next) => {
 
     if (!token) {
       return next(
-        new Error(
-          "Authentication required"
-        )
+        new Error("Authentication required")
       );
     }
 
-    socket.user =
-      verifyToken(token);
+    socket.user = verifyToken(token);
 
     next();
   } catch {
@@ -309,48 +302,91 @@ io.use((socket, next) => {
   }
 });
 
-io.on("connection", socket => {
+/* =========================================================
+   SOCKET CONNECTION
+========================================================= */
 
-  /* =====================
+io.on("connection", (socket) => {
+  console.log(
+    "Socket connected:",
+    socket.user.sub
+  );
+
+  /* =======================================================
      CREATE ROOM
-  ===================== */
+  ======================================================= */
 
   socket.on(
     "room:create",
     async ({ mode }, ack = () => {}) => {
       try {
         if (
-          !["2p", "4p", "ai"].includes(
-            mode
-          )
+          !["2p", "4p", "ai"].includes(mode)
         ) {
           throw new Error(
-            "Invalid mode"
+            "Invalid game mode."
           );
         }
 
         const user =
           await prisma.user.findUnique({
             where: {
-              id: socket.user.sub
-            }
+              id: socket.user.sub,
+            },
           });
 
         if (!user) {
           throw new Error(
-            "User not found"
+            "User not found."
           );
         }
 
-        const roomCode =
-          randomCode();
+        const roomCode = randomCode();
+
+        /*
+          For AI mode the actual game has:
+          Human = red
+          Computer = green
+        */
+
+        const gameMode =
+          mode === "ai"
+            ? "2p"
+            : mode;
 
         const state =
           createGameState({
             creatorId: user.id,
             username: user.username,
-            mode
+            mode: gameMode,
           });
+
+        /* =================================================
+           ADD COMPUTER PLAYER
+        ================================================= */
+
+        if (mode === "ai") {
+          state.players.push({
+            userId: "ai:computer",
+            username: "Computer",
+            color: "green",
+            tokens: [
+              -1,
+              -1,
+              -1,
+              -1,
+            ],
+            finished: false,
+          });
+
+          state.playerCount = 2;
+          state.status = "playing";
+          state.turnIndex = 0;
+        }
+
+        /* =================================================
+           SAVE GAME
+        ================================================= */
 
         const game =
           await prisma.game.create({
@@ -358,13 +394,13 @@ io.on("connection", socket => {
               roomCode,
               mode,
               state,
-              creatorId: user.id
-            }
+              creatorId: user.id,
+            },
           });
 
         const room = {
           dbId: game.id,
-          state
+          state,
         };
 
         rooms.set(
@@ -377,7 +413,7 @@ io.on("connection", socket => {
         ack({
           ok: true,
           roomCode,
-          state: publicState(state)
+          state: publicState(state),
         });
 
         io.to(roomCode).emit(
@@ -385,16 +421,23 @@ io.on("connection", socket => {
           publicState(state)
         );
 
+        /* =================================================
+           START AI
+        ================================================= */
+
         if (mode === "ai") {
-          setTimeout(
-            () =>
-              runAiTurn(
-                state,
-                io,
-                roomCode
-              ),
-            1000
-          );
+          setTimeout(() => {
+            runAiTurn(
+              state,
+              io,
+              roomCode
+            ).catch((error) => {
+              console.error(
+                "AI ERROR:",
+                error
+              );
+            });
+          }, 1000);
         }
       } catch (error) {
         console.error(
@@ -404,46 +447,45 @@ io.on("connection", socket => {
 
         ack({
           ok: false,
-          error: error.message
+          error: error.message,
         });
       }
     }
   );
 
-  /* =====================
+  /* =======================================================
      JOIN ROOM
-  ===================== */
+  ======================================================= */
 
   socket.on(
     "room:join",
     async ({ roomCode }, ack = () => {}) => {
       try {
-        const code =
-          String(
-            roomCode || ""
-          )
-            .trim()
-            .toUpperCase();
+        const code = String(
+          roomCode || ""
+        )
+          .trim()
+          .toUpperCase();
 
         const room =
           await getRoom(code);
 
         if (!room) {
           throw new Error(
-            "Room not found"
+            "Room not found."
           );
         }
 
         const user =
           await prisma.user.findUnique({
             where: {
-              id: socket.user.sub
-            }
+              id: socket.user.sub,
+            },
           });
 
         if (!user) {
           throw new Error(
-            "User not found"
+            "User not found."
           );
         }
 
@@ -467,7 +509,7 @@ io.on("connection", socket => {
           roomCode: code,
           state: publicState(
             room.state
-          )
+          ),
         });
       } catch (error) {
         console.error(
@@ -477,32 +519,39 @@ io.on("connection", socket => {
 
         ack({
           ok: false,
-          error: error.message
+          error: error.message,
         });
       }
     }
   );
 
-  /* =====================
+  /* =======================================================
      ROLL DICE
-  ===================== */
+  ======================================================= */
 
   socket.on(
     "game:roll",
     async ({ roomCode }, ack = () => {}) => {
       try {
-        const code =
-          String(roomCode)
-            .toUpperCase();
+        const code = String(
+          roomCode || ""
+        )
+          .trim()
+          .toUpperCase();
 
         const room =
           await getRoom(code);
 
         if (!room) {
           throw new Error(
-            "Room not found"
+            "Room not found."
           );
         }
+
+        /*
+          Only the current player can roll.
+          The server generates the number.
+        */
 
         rollDice(
           room.state,
@@ -511,37 +560,45 @@ io.on("connection", socket => {
 
         await saveRoom(room);
 
+        /*
+          Immediately send the new dice
+          number to every player.
+        */
+
         io.to(code).emit(
           "game:state",
-          publicState(
-            room.state
-          )
+          publicState(room.state)
         );
 
-        ack({ ok: true });
+        ack({
+          ok: true,
+          dice: room.state.dice,
+        });
 
         /*
-          If rolling caused the turn to move
-          directly to the AI, start it.
+          If the roll caused the turn to
+          advance to the AI, start AI.
         */
+
         if (
           room.state.status ===
             "playing" &&
           room.state.players[
             room.state.turnIndex
-          ]?.userId.startsWith(
-            "ai:"
-          )
+          ]?.userId.startsWith("ai:")
         ) {
-          setTimeout(
-            () =>
-              runAiTurn(
-                room.state,
-                io,
-                code
-              ),
-            700
-          );
+          setTimeout(() => {
+            runAiTurn(
+              room.state,
+              io,
+              code
+            ).catch((error) => {
+              console.error(
+                "AI ERROR:",
+                error
+              );
+            });
+          }, 700);
         }
       } catch (error) {
         console.error(
@@ -551,15 +608,15 @@ io.on("connection", socket => {
 
         ack({
           ok: false,
-          error: error.message
+          error: error.message,
         });
       }
     }
   );
 
-  /* =====================
+  /* =======================================================
      MOVE PIECE
-  ===================== */
+  ======================================================= */
 
   socket.on(
     "game:move",
@@ -568,16 +625,18 @@ io.on("connection", socket => {
       ack = () => {}
     ) => {
       try {
-        const code =
-          String(roomCode)
-            .toUpperCase();
+        const code = String(
+          roomCode || ""
+        )
+          .trim()
+          .toUpperCase();
 
         const room =
           await getRoom(code);
 
         if (!room) {
           throw new Error(
-            "Room not found"
+            "Room not found."
           );
         }
 
@@ -589,37 +648,43 @@ io.on("connection", socket => {
 
         await saveRoom(room);
 
+        /*
+          Send updated board to everyone.
+        */
+
         io.to(code).emit(
           "game:state",
-          publicState(
-            room.state
-          )
+          publicState(room.state)
         );
 
-        ack({ ok: true });
+        ack({
+          ok: true,
+        });
 
         /*
-          Start AI whenever the turn
-          reaches the computer.
+          If it is now the AI's turn,
+          automatically start the AI.
         */
+
         if (
           room.state.status ===
             "playing" &&
           room.state.players[
             room.state.turnIndex
-          ]?.userId.startsWith(
-            "ai:"
-          )
+          ]?.userId.startsWith("ai:")
         ) {
-          setTimeout(
-            () =>
-              runAiTurn(
-                room.state,
-                io,
-                code
-              ),
-            700
-          );
+          setTimeout(() => {
+            runAiTurn(
+              room.state,
+              io,
+              code
+            ).catch((error) => {
+              console.error(
+                "AI ERROR:",
+                error
+              );
+            });
+          }, 700);
         }
       } catch (error) {
         console.error(
@@ -629,15 +694,15 @@ io.on("connection", socket => {
 
         ack({
           ok: false,
-          error: error.message
+          error: error.message,
         });
       }
     }
   );
 
-  /* =====================
-     ROOM STATE
-  ===================== */
+  /* =======================================================
+     GET CURRENT ROOM STATE
+  ======================================================= */
 
   socket.on(
     "room:state",
@@ -646,9 +711,11 @@ io.on("connection", socket => {
       ack = () => {}
     ) => {
       try {
-        const code =
-          String(roomCode)
-            .toUpperCase();
+        const code = String(
+          roomCode || ""
+        )
+          .trim()
+          .toUpperCase();
 
         const room =
           await getRoom(code);
@@ -656,39 +723,49 @@ io.on("connection", socket => {
         if (!room) {
           return ack({
             ok: false,
-            error:
-              "Room not found"
+            error: "Room not found.",
           });
         }
 
         socket.join(code);
 
+        const state =
+          publicState(room.state);
+
         ack({
           ok: true,
-          state: publicState(
-            room.state
-          )
+          state,
         });
 
         socket.emit(
           "game:state",
-          publicState(
-            room.state
-          )
+          state
         );
       } catch (error) {
+        console.error(
+          "ROOM STATE ERROR:",
+          error
+        );
+
         ack({
           ok: false,
-          error: error.message
+          error: error.message,
         });
       }
     }
   );
+
+  socket.on("disconnect", () => {
+    console.log(
+      "Socket disconnected:",
+      socket.user.sub
+    );
+  });
 });
 
-/* =========================
-   SERVE REACT
-========================= */
+/* =========================================================
+   SERVE REACT BUILD
+========================================================= */
 
 const dist = path.resolve(
   __dirname,
@@ -718,6 +795,10 @@ app.get(
   }
 );
 
+/* =========================================================
+   START SERVER
+========================================================= */
+
 server.listen(
   port,
   "0.0.0.0",
@@ -727,6 +808,10 @@ server.listen(
     );
   }
 );
+
+/* =========================================================
+   SHUTDOWN
+========================================================= */
 
 process.on(
   "SIGTERM",
