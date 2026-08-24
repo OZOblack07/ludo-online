@@ -5,7 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #17212b;
+  background: #18212b;
   color: #fff;
 }
 
@@ -18,16 +18,15 @@ button {
   cursor: pointer;
 }
 
-/* =========================================================
+/* =========================
    AUTH
-========================================================= */
+========================= */
 
 .auth-shell {
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 20px;
-  background: linear-gradient(135deg, #17212b, #263238);
 }
 
 .auth-card {
@@ -35,8 +34,7 @@ button {
   padding: 34px;
   background: #fff;
   color: #18212b;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border-radius: 18px;
 }
 
 .auth-card h1 {
@@ -94,9 +92,9 @@ button {
   border-radius: 8px;
 }
 
-/* =========================================================
+/* =========================
    DASHBOARD
-========================================================= */
+========================= */
 
 .dashboard {
   max-width: 1100px;
@@ -117,10 +115,6 @@ button {
   padding: 60px 0 30px;
 }
 
-.hero h1 {
-  font-size: 42px;
-}
-
 .mode-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -138,8 +132,7 @@ button {
 }
 
 .mode-card:hover {
-  border-color: #fff;
-  transform: translateY(-2px);
+  border-color: white;
 }
 
 .mode-card span {
@@ -159,14 +152,14 @@ button {
   gap: 10px;
 }
 
-/* =========================================================
+/* =========================
    GAME PAGE
-========================================================= */
+========================= */
 
 .game-page {
   min-height: 100vh;
   padding: 18px;
-  max-width: 1250px;
+  max-width: 1400px;
   margin: auto;
 }
 
@@ -177,12 +170,12 @@ button {
 
 .room-title {
   font-size: 20px;
-  font-weight: 900;
+  font-weight: bold;
 }
 
 .room-title span {
-  margin-left: 10px;
   color: #90caf9;
+  margin-left: 10px;
 }
 
 .turn-badge {
@@ -191,26 +184,26 @@ button {
 }
 
 .turn-badge.my-turn {
-  color: #81c784;
+  color: #4ade80;
 }
 
 .game-error {
-  max-width: 700px;
+  max-width: 900px;
   margin: 15px auto;
 }
 
 .game-layout {
   display: grid;
-  grid-template-columns: minmax(500px, 700px) 280px;
+  grid-template-columns: minmax(500px, 760px) 280px;
   gap: 25px;
   justify-content: center;
   align-items: start;
   margin-top: 25px;
 }
 
-/* =========================================================
-   ACTUAL LUDO BOARD
-========================================================= */
+/* ==================================================
+   REAL TRADITIONAL LUDO BOARD
+================================================== */
 
 .board-section {
   width: 100%;
@@ -218,43 +211,30 @@ button {
 
 .traditional-board-wrapper {
   width: 100%;
-  display: flex;
-  justify-content: center;
+  max-width: 760px;
+  margin: auto;
+  background: #111;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
 /*
-   IMPORTANT:
-
-   Your React code uses:
-
-   .ludo-board
-   .board-grid
-   .home-area
-   .home-circles
-   .piece
-
-   NOT .board / .yard / .token.
+   15 x 15 Ludo board
 */
-
-/* Main board */
 
 .ludo-board {
   position: relative;
-
-  width: min(700px, 100%);
+  width: 100%;
   aspect-ratio: 1 / 1;
-
-  background: #fff;
-
-  border: 10px solid #111;
-
-  box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.5);
-
+  background: white;
   overflow: hidden;
+  border: 4px solid #111;
 }
 
-/* 15 x 15 board grid */
+/*
+   The 15 x 15 grid
+*/
 
 .board-grid {
   position: absolute;
@@ -264,159 +244,137 @@ button {
   grid-template-columns: repeat(15, 1fr);
   grid-template-rows: repeat(15, 1fr);
 
-  background: #fff;
+  z-index: 1;
 }
-
-/* Every square */
 
 .cell {
-  border: 1px solid #222;
+  border: 1px solid #555;
   background: #fff;
 }
 
-/* =========================================================
-   HOME AREAS
-========================================================= */
+/* =========================
+   HOME QUADRANTS
+========================= */
 
 .home-area {
   position: absolute;
-
   width: 40%;
   height: 40%;
-
-  padding: 18px;
-
-  border: 6px solid rgba(0, 0, 0, 0.25);
-
   z-index: 3;
-}
 
-/* Red - top left */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
+  border: 6px solid;
+  box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.15);
+}
 
 .home-red {
-  top: 0;
   left: 0;
-  background: #ef3e3e;
-  border-color: #b71c1c;
+  top: 0;
+  background: #ef4444;
+  border-color: #b91c1c;
 }
-
-/* Green - top right */
 
 .home-green {
-  top: 0;
   right: 0;
-  background: #20c55a;
-  border-color: #087f32;
+  top: 0;
+  background: #22c55e;
+  border-color: #15803d;
 }
-
-/* Yellow - bottom right */
 
 .home-yellow {
   right: 0;
   bottom: 0;
-  background: #f5c400;
-  border-color: #b18b00;
+  background: #facc15;
+  border-color: #ca8a04;
 }
-
-/* Blue - bottom left */
 
 .home-blue {
   left: 0;
   bottom: 0;
-  background: #3485e5;
-  border-color: #1453a3;
+  background: #3b82f6;
+  border-color: #1d4ed8;
 }
-
-/* Player name */
 
 .home-title {
-  text-align: center;
-
-  font-size: 17px;
+  font-size: clamp(12px, 2vw, 20px);
   font-weight: 900;
-
-  color: #fff;
-
-  text-shadow:
-    1px 1px 2px rgba(0, 0, 0, 0.8);
-
-  margin-bottom: 10px;
+  color: white;
+  text-shadow: 2px 2px 3px rgba(0,0,0,.6);
+  text-transform: uppercase;
 }
 
-/* =========================================================
-   PIECE HOME CIRCLES
-========================================================= */
+/*
+   Four white token spaces
+*/
 
 .home-circles {
-  position: absolute;
-
-  left: 12%;
-  right: 12%;
-  top: 25%;
-  bottom: 12%;
-
+  width: 72%;
   display: grid;
-
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-
   gap: 12px;
-
-  padding: 10px;
 }
 
 .home-circle {
-  background: #fff;
-
+  aspect-ratio: 1;
+  background: white;
   border-radius: 50%;
-
-  border: 4px solid rgba(0, 0, 0, 0.25);
-
+  border: 3px solid rgba(0,0,0,.25);
   box-shadow:
-    inset 0 2px 5px rgba(0, 0, 0, 0.15);
+    inset 0 2px 4px rgba(0,0,0,.2),
+    0 2px 4px rgba(0,0,0,.3);
 }
 
-/* =========================================================
+/* =========================
    TRACK COLORS
-========================================================= */
+========================= */
 
 .cell-red {
-  background: #ef3e3e !important;
+  background: #ef4444;
 }
 
 .cell-green {
-  background: #20c55a !important;
+  background: #22c55e;
 }
 
 .cell-yellow {
-  background: #f5c400 !important;
+  background: #facc15;
 }
 
 .cell-blue {
-  background: #3485e5 !important;
+  background: #3b82f6;
 }
 
-/* Home lanes */
+/*
+   Home stretches
+*/
 
-.cell.path.cell-red {
-  background: #ef3e3e !important;
+.cell-path {
+  background: white;
 }
 
-.cell.path.cell-green {
-  background: #20c55a !important;
+.cell-red.cell-path {
+  background: #ef4444;
 }
 
-.cell.path.cell-yellow {
-  background: #f5c400 !important;
+.cell-green.cell-path {
+  background: #22c55e;
 }
 
-.cell.path.cell-blue {
-  background: #3485e5 !important;
+.cell-yellow.cell-path {
+  background: #facc15;
 }
 
-/* =========================================================
+.cell-blue.cell-path {
+  background: #3b82f6;
+}
+
+/* =========================
    CENTER HOME
-========================================================= */
+========================= */
 
 .center-home {
   position: absolute;
@@ -427,72 +385,66 @@ button {
   width: 20%;
   height: 20%;
 
-  z-index: 8;
+  z-index: 6;
 
   border: 3px solid #111;
 
-  background: #fff;
+  background:
+    conic-gradient(
+      #22c55e 0deg 90deg,
+      #facc15 90deg 180deg,
+      #3b82f6 180deg 270deg,
+      #ef4444 270deg 360deg
+    );
 
   overflow: hidden;
 }
 
 /*
-   Four colored triangles create the
-   classic Ludo center.
+   Center triangles
 */
 
 .triangle {
   position: absolute;
-
   width: 0;
   height: 0;
-
-  border-style: solid;
 }
-
-/* Red */
 
 .red-triangle {
-  left: 0;
   top: 0;
+  left: 0;
 
-  border-width: 50% 50% 50% 0;
-  border-color: transparent #ef3e3e transparent transparent;
+  border-top: 50% solid #ef4444;
+  border-right: 50% solid transparent;
 }
-
-/* Green */
 
 .green-triangle {
-  right: 0;
   top: 0;
+  right: 0;
 
-  border-width: 0 50% 50% 50%;
-  border-color: transparent transparent #20c55a transparent;
+  border-top: 50% solid #22c55e;
+  border-left: 50% solid transparent;
 }
-
-/* Yellow */
 
 .yellow-triangle {
-  right: 0;
   bottom: 0;
+  right: 0;
 
-  border-width: 50% 0 50% 50%;
-  border-color: transparent transparent transparent #f5c400;
+  border-bottom: 50% solid #facc15;
+  border-left: 50% solid transparent;
 }
-
-/* Blue */
 
 .blue-triangle {
-  left: 0;
   bottom: 0;
+  left: 0;
 
-  border-width: 50% 50% 0 50%;
-  border-color: #3485e5 transparent transparent transparent;
+  border-bottom: 50% solid #3b82f6;
+  border-right: 50% solid transparent;
 }
 
-/* =========================================================
-   ACTUAL PLAYING PIECES
-========================================================= */
+/* =========================
+   PLAYING PIECES
+========================= */
 
 .piece {
   position: absolute;
@@ -503,62 +455,46 @@ button {
   transform: translate(-50%, -50%);
 
   border-radius: 50%;
+  border: 4px solid white;
 
-  border: 4px solid #fff;
-
-  color: #fff;
-
+  color: white;
   font-size: 14px;
   font-weight: 900;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   z-index: 20;
 
   box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.45),
-    inset 0 2px 4px rgba(255, 255, 255, 0.5);
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+    0 4px 8px rgba(0,0,0,.5),
+    inset 0 2px 4px rgba(255,255,255,.5);
 }
-
-.piece:hover:not(:disabled) {
-  transform: translate(-50%, -50%) scale(1.15);
-
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.6),
-    0 0 0 4px rgba(255, 255, 255, 0.5);
-}
-
-.piece:disabled {
-  cursor: default;
-}
-
-/* Piece colors */
 
 .piece-red {
   background: #e53935;
 }
 
 .piece-green {
-  background: #20b957;
+  background: #16a34a;
 }
 
 .piece-yellow {
-  background: #e6b800;
+  background: #eab308;
 }
 
 .piece-blue {
-  background: #2878d8;
+  background: #2563eb;
 }
 
-/* =========================================================
+.piece:not(:disabled):hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.piece:disabled {
+  cursor: default;
+}
+
+/* =========================
    SIDE PANEL
-========================================================= */
+========================= */
 
 .side-panel {
   background: #263238;
@@ -569,38 +505,37 @@ button {
 
 .side-panel h2 {
   margin-top: 0;
+  text-align: center;
 }
 
-/* =========================================================
+/* =========================
    DICE
-========================================================= */
+========================= */
 
 .dice {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
 
   margin: 20px auto;
 
-  display: grid;
+  background: white;
+  border-radius: 16px;
 
+  position: relative;
+
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
 
-  gap: 5px;
-
   padding: 14px;
 
-  background: #fff;
-
-  border-radius: 15px;
-
   box-shadow:
-    0 5px 15px rgba(0, 0, 0, 0.3);
+    0 5px 15px rgba(0,0,0,.35);
 }
 
 .dot {
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
 
   background: #111;
 
@@ -610,68 +545,52 @@ button {
   justify-self: center;
 }
 
-/* Dice positions */
+/* Dice dot positions */
 
 .dot-0 {
-  grid-column: 1;
-  grid-row: 1;
+  grid-area: 1 / 1;
 }
 
 .dot-1 {
-  grid-column: 3;
-  grid-row: 1;
+  grid-area: 1 / 2;
 }
 
 .dot-2 {
-  grid-column: 1;
-  grid-row: 3;
+  grid-area: 1 / 3;
 }
 
 .dot-3 {
-  grid-column: 3;
-  grid-row: 3;
+  grid-area: 2 / 1;
 }
 
 .dot-4 {
-  grid-column: 2;
-  grid-row: 2;
+  grid-area: 2 / 2;
 }
 
 .dot-5 {
-  grid-column: 1;
-  grid-row: 2;
+  grid-area: 2 / 3;
 }
 
 .dot-6 {
-  grid-column: 3;
-  grid-row: 2;
+  grid-area: 3 / 1;
+}
+
+.dot-7 {
+  grid-area: 3 / 2;
 }
 
 .dot-8 {
-  grid-column: 2;
-  grid-row: 3;
+  grid-area: 3 / 3;
 }
-
-/* =========================================================
-   DICE BUTTON
-========================================================= */
 
 .dice-btn {
   width: 100%;
   font-size: 16px;
 }
 
-.dice-btn:not(:disabled) {
-  background: #2e7d32;
-}
-
-.dice-btn:not(:disabled):hover {
-  background: #388e3c;
-}
-
-/* =========================================================
-   PLAYERS
-========================================================= */
+/* =========================
+   PLAYER LIST
+========================= */
 
 .players-list {
   display: grid;
@@ -683,104 +602,101 @@ button {
   display: flex;
   align-items: center;
   gap: 9px;
-
-  padding: 11px;
-
+  padding: 10px;
   background: #172027;
-
   border-radius: 8px;
 }
 
 .player-row small {
-  color: #aaa;
+  color: #9ca3af;
   margin-left: auto;
 }
 
 .active-player {
-  outline: 2px solid #81c784;
+  outline: 2px solid #4ade80;
 }
 
-.dot {
+.player-row .dot {
   width: 14px;
   height: 14px;
-  border-radius: 50%;
   flex-shrink: 0;
 }
 
-/* =========================================================
+/* =========================
    LOADING
-========================================================= */
+========================= */
 
 .loading {
   min-height: 100vh;
-
   display: grid;
-
   place-items: center;
-
-  text-align: center;
 }
 
 .loading-dice {
-  font-size: 60px;
+  font-size: 70px;
 }
 
-/* =========================================================
+/* =========================
    MOBILE
-========================================================= */
+========================= */
 
-@media (max-width: 800px) {
-  .mode-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 900px) {
 
   .game-layout {
     grid-template-columns: 1fr;
   }
 
-  .ludo-board {
-    width: 100%;
-    max-width: 600px;
-
-    border-width: 5px;
-  }
-
   .side-panel {
-    position: static;
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .game-page {
+    padding: 10px;
   }
 
-  .dashboard {
-    padding: 18px;
+  .game-top {
+    font-size: 13px;
   }
 
-  .hero {
-    padding: 40px 0 25px;
+  .room-title {
+    font-size: 16px;
   }
 
-  .hero h1 {
-    font-size: 32px;
-  }
-
-  .home-area {
-    border-width: 4px;
-    padding: 8px;
-  }
-
-  .home-title {
-    font-size: 11px;
-  }
-
-  .home-circles {
-    gap: 5px;
-    padding: 5px;
+  .traditional-board-wrapper {
+    padding: 3px;
   }
 
   .piece {
     width: 28px;
     height: 28px;
-
-    font-size: 10px;
-
     border-width: 3px;
+    font-size: 10px;
+  }
+
+  .home-area {
+    border-width: 4px;
+  }
+
+  .home-circles {
+    gap: 6px;
+  }
+
+  .home-circle {
+    border-width: 2px;
+  }
+
+  .dice {
+    width: 90px;
+    height: 90px;
+  }
+
+  .dot {
+    width: 13px;
+    height: 13px;
   }
 }
