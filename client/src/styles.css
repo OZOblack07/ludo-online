@@ -1,1 +1,472 @@
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0b1020;color:#f8fafc}button,input{font:inherit}button{cursor:pointer}.auth-shell{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at top,#1e293b,#0b1020 55%)}.auth-card{width:min(430px,100%);padding:34px;border:1px solid #263248;border-radius:24px;background:#111827;box-shadow:0 25px 80px #0006}.logo{font-weight:900;letter-spacing:.08em;font-size:20px}.auth-card h1{margin:30px 0 8px;font-size:30px}.muted{color:#94a3b8}.auth-card form{display:grid;gap:12px;margin-top:25px}.auth-card input,.join-row input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid #334155;background:#0f172a;color:#fff;outline:none}.auth-card input:focus,.join-row input:focus{border-color:#60a5fa}.primary{border:0;background:#4f46e5;color:#fff;padding:13px 18px;border-radius:12px;font-weight:800}.primary:disabled{opacity:.45;cursor:not-allowed}.link,.ghost{background:transparent;color:#a5b4fc;border:0;margin-top:15px}.dashboard{max-width:1100px;margin:auto;padding:28px}.topbar,.game-top{display:flex;justify-content:space-between;align-items:center;gap:20px}.hero{text-align:center;padding:70px 0 35px}.hero h1{font-size:clamp(32px,6vw,56px);margin:0}.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.mode-card{background:#111827;color:#fff;text-align:left;border:1px solid #263248;border-radius:22px;padding:28px;min-height:190px;transition:.2s}.mode-card:hover{transform:translateY(-3px);border-color:#6366f1}.mode-card span{font-size:36px}.mode-card h2{margin:14px 0 8px}.mode-card p{color:#94a3b8}.join-card{margin:22px auto;max-width:600px;background:#111827;border:1px solid #263248;border-radius:22px;padding:25px}.join-row{display:flex;gap:10px}.error{background:#451a1a;color:#fecaca;border:1px solid #7f1d1d;padding:10px 12px;border-radius:10px}.game-page{min-height:100vh;padding:18px;max-width:1250px;margin:auto}.game-top{padding-bottom:16px;border-bottom:1px solid #263248}.waiting,.winner{margin:18px auto;max-width:800px;text-align:center;padding:22px;border-radius:18px;background:#111827;border:1px solid #263248}.game-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px;align-items:start;margin-top:20px}.board{position:relative;aspect-ratio:1;background:#f8fafc;border-radius:24px;overflow:hidden;border:8px solid #1e293b;min-height:520px}.board-center{position:absolute;left:42%;top:42%;width:16%;height:16%;display:grid;place-items:center;background:#e2e8f0;border-radius:50%;z-index:2;font-size:30px}.yard{position:absolute;width:42%;height:42%;padding:12px;border:5px solid;border-radius:20px;background:#ffffff22}.yard:nth-child(2){left:2%;top:2%}.yard:nth-child(3){right:2%;top:2%}.yard:nth-child(4){right:2%;bottom:2%}.yard:nth-child(5){left:2%;bottom:2%}.yard-title{font-weight:900;text-align:center}.tokens{position:relative;height:100%}.token{position:absolute;transform:translate(-50%,-50%);width:35px;height:35px;border:3px solid white;border-radius:50%;color:white;font-weight:900;box-shadow:0 4px 10px #0004}.token:disabled{cursor:default;opacity:.8}.track-hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:#475569;font-size:11px}.side-panel{background:#111827;border:1px solid #263248;border-radius:22px;padding:20px;position:sticky;top:15px}.dice{height:100px;width:100px;margin:0 auto 16px;display:grid;place-items:center;background:#fff;color:#111827;border-radius:20px;font-size:52px;font-weight:900}.dice-btn{width:100%}.turn{text-align:center;font-weight:800}.players-list{display:grid;gap:10px;margin-top:20px}.player-row{display:flex;align-items:center;gap:9px;padding:10px;background:#0f172a;border-radius:10px}.dot{width:12px;height:12px;border-radius:50%}.loading{min-height:100vh;display:grid;place-items:center}.game-top span{color:#a5b4fc}@media(max-width:800px){.mode-grid{grid-template-columns:1fr}.game-layout{grid-template-columns:1fr}.side-panel{position:static}.board{min-height:0}.dashboard{padding:18px}.hero{padding:45px 0 25px}.yard{border-width:3px}.token{width:28px;height:28px;font-size:11px}}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #18212b;
+  color: #fff;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* =========================
+   LOGIN / DASHBOARD
+========================= */
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #18212b;
+}
+
+.auth-card {
+  width: min(430px, 100%);
+  padding: 34px;
+  background: #fff;
+  color: #18212b;
+  border-radius: 18px;
+}
+
+.auth-card h1 {
+  margin: 30px 0 8px;
+}
+
+.auth-card form {
+  display: grid;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.auth-card input,
+.join-row input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+}
+
+.primary {
+  border: 0;
+  background: #2e7d32;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.ghost,
+.link {
+  background: transparent;
+  border: 0;
+  color: #90caf9;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.muted {
+  color: #9ca3af;
+}
+
+.error {
+  padding: 10px;
+  margin-top: 10px;
+  background: #7f1d1d;
+  border-radius: 8px;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard {
+  max-width: 1100px;
+  margin: auto;
+  padding: 28px;
+}
+
+.topbar,
+.game-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.hero {
+  text-align: center;
+  padding: 60px 0 30px;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.mode-card {
+  background: #263238;
+  color: white;
+  border: 2px solid #455a64;
+  border-radius: 14px;
+  padding: 28px;
+  min-height: 180px;
+  text-align: left;
+}
+
+.mode-card:hover {
+  border-color: #fff;
+}
+
+.mode-card span {
+  font-size: 38px;
+}
+
+.join-card {
+  margin: 22px auto;
+  max-width: 600px;
+  background: #263238;
+  border-radius: 14px;
+  padding: 25px;
+}
+
+.join-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* =========================
+   GAME
+========================= */
+
+.game-page {
+  min-height: 100vh;
+  padding: 18px;
+  max-width: 1250px;
+  margin: auto;
+}
+
+.game-top {
+  padding-bottom: 16px;
+  border-bottom: 2px solid #455a64;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: minmax(500px, 700px) 280px;
+  gap: 25px;
+  justify-content: center;
+  align-items: start;
+  margin-top: 25px;
+}
+
+/* =========================
+   TRADITIONAL LUDO BOARD
+========================= */
+
+.board {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 700px;
+  overflow: hidden;
+
+  /* white board border */
+  border: 10px solid #fff;
+
+  /* 15 x 15 style Ludo grid */
+  background-color: white;
+
+  background-image:
+    linear-gradient(#222 1px, transparent 1px),
+    linear-gradient(90deg, #222 1px, transparent 1px);
+
+  background-size: 6.6667% 6.6667%;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.45);
+}
+
+/* Four traditional home areas */
+
+.yard {
+  position: absolute;
+  width: 40%;
+  height: 40%;
+  padding: 20px;
+
+  border: 0 !important;
+  border-radius: 0;
+
+  background: white;
+
+  box-shadow: inset 0 0 0 5px var(--yard-color);
+}
+
+/* RED - top left */
+.yard:nth-child(2) {
+  left: 0;
+  top: 0;
+  background: #ef4444;
+  --yard-color: #b91c1c;
+}
+
+/* GREEN - top right */
+.yard:nth-child(3) {
+  right: 0;
+  top: 0;
+  background: #22c55e;
+  --yard-color: #15803d;
+}
+
+/* YELLOW - bottom right */
+.yard:nth-child(4) {
+  right: 0;
+  bottom: 0;
+  background: #facc15;
+  --yard-color: #ca8a04;
+}
+
+/* BLUE - bottom left */
+.yard:nth-child(5) {
+  left: 0;
+  bottom: 0;
+  background: #3b82f6;
+  --yard-color: #1d4ed8;
+}
+
+.yard-title {
+  color: white !important;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* White circles where Ludo pieces sit */
+
+.tokens {
+  position: relative;
+  height: 100%;
+}
+
+.tokens::before,
+.tokens::after {
+  content: "";
+  position: absolute;
+}
+
+/* Center home */
+
+.board-center {
+  position: absolute;
+
+  left: 40%;
+  top: 40%;
+
+  width: 20%;
+  height: 20%;
+
+  z-index: 5;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 40px;
+
+  background:
+    conic-gradient(
+      #22c55e 0deg 90deg,
+      #facc15 90deg 180deg,
+      #3b82f6 180deg 270deg,
+      #ef4444 270deg 360deg
+    );
+
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+
+  border: 3px solid #222;
+}
+
+/* Player pieces */
+
+.token {
+  position: absolute;
+
+  width: 38px;
+  height: 38px;
+
+  transform: translate(-50%, -50%);
+
+  border: 4px solid white;
+  border-radius: 50%;
+
+  color: white;
+  font-weight: 900;
+
+  box-shadow:
+    0 3px 7px rgba(0,0,0,.45),
+    inset 0 2px 3px rgba(255,255,255,.5);
+
+  z-index: 10;
+}
+
+.token:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.token:disabled {
+  cursor: default;
+}
+
+.track-hint {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+
+  text-align: center;
+
+  font-size: 10px;
+  color: #555;
+
+  pointer-events: none;
+}
+
+/* =========================
+   SIDE PANEL
+========================= */
+
+.side-panel {
+  background: #263238;
+  border: 2px solid #455a64;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.dice {
+  width: 100px;
+  height: 100px;
+
+  margin: 0 auto 16px;
+
+  display: grid;
+  place-items: center;
+
+  background: white;
+  color: #111;
+
+  border-radius: 15px;
+
+  font-size: 52px;
+  font-weight: 900;
+}
+
+.dice-btn {
+  width: 100%;
+}
+
+.turn {
+  text-align: center;
+  font-weight: 800;
+  margin: 15px 0;
+}
+
+.players-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 10px;
+
+  background: #172027;
+  border-radius: 8px;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.waiting,
+.winner {
+  margin: 18px auto;
+  max-width: 800px;
+
+  text-align: center;
+
+  padding: 22px;
+
+  border-radius: 14px;
+
+  background: #263238;
+  border: 2px solid #455a64;
+}
+
+.loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 800px) {
+
+  .mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .board {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .side-panel {
+    position: static;
+  }
+
+  .dashboard {
+    padding: 18px;
+  }
+
+  .hero {
+    padding: 40px 0 25px;
+  }
+
+  .token {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+}
