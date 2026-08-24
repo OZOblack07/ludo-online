@@ -2,7 +2,7 @@ services:
   - type: web
     name: ludo-online
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm ci && npm run build
     preDeployCommand: npm run db:migrate
     startCommand: npm start
@@ -19,4 +19,4 @@ services:
 
 databases:
   - name: ludo-db
-    plan: basic-256mb
+    plan: free
