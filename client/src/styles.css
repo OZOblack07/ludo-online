@@ -5,7 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #18212b;
+  background: #17212b;
   color: #fff;
 }
 
@@ -18,16 +18,16 @@ button {
   cursor: pointer;
 }
 
-/* =========================
-   LOGIN / DASHBOARD
-========================= */
+/* =========================================================
+   AUTH
+========================================================= */
 
 .auth-shell {
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 20px;
-  background: #18212b;
+  background: linear-gradient(135deg, #17212b, #263238);
 }
 
 .auth-card {
@@ -35,7 +35,8 @@ button {
   padding: 34px;
   background: #fff;
   color: #18212b;
-  border-radius: 18px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
 .auth-card h1 {
@@ -65,6 +66,11 @@ button {
   font-weight: bold;
 }
 
+.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .ghost,
 .link {
   background: transparent;
@@ -88,9 +94,9 @@ button {
   border-radius: 8px;
 }
 
-/* =========================
+/* =========================================================
    DASHBOARD
-========================= */
+========================================================= */
 
 .dashboard {
   max-width: 1100px;
@@ -111,6 +117,10 @@ button {
   padding: 60px 0 30px;
 }
 
+.hero h1 {
+  font-size: 42px;
+}
+
 .mode-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -129,6 +139,7 @@ button {
 
 .mode-card:hover {
   border-color: #fff;
+  transform: translateY(-2px);
 }
 
 .mode-card span {
@@ -148,9 +159,9 @@ button {
   gap: 10px;
 }
 
-/* =========================
-   GAME
-========================= */
+/* =========================================================
+   GAME PAGE
+========================================================= */
 
 .game-page {
   min-height: 100vh;
@@ -164,6 +175,30 @@ button {
   border-bottom: 2px solid #455a64;
 }
 
+.room-title {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.room-title span {
+  margin-left: 10px;
+  color: #90caf9;
+}
+
+.turn-badge {
+  font-weight: bold;
+  color: #bbb;
+}
+
+.turn-badge.my-turn {
+  color: #81c784;
+}
+
+.game-error {
+  max-width: 700px;
+  margin: 15px auto;
+}
+
 .game-layout {
   display: grid;
   grid-template-columns: minmax(500px, 700px) 280px;
@@ -173,105 +208,217 @@ button {
   margin-top: 25px;
 }
 
-/* =========================
-   TRADITIONAL LUDO BOARD
-========================= */
+/* =========================================================
+   ACTUAL LUDO BOARD
+========================================================= */
 
-.board {
-  position: relative;
+.board-section {
   width: 100%;
-  aspect-ratio: 1;
-  max-width: 700px;
-  overflow: hidden;
+}
 
-  /* white board border */
-  border: 10px solid #fff;
+.traditional-board-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
-  /* 15 x 15 style Ludo grid */
-  background-color: white;
+/*
+   IMPORTANT:
 
-  background-image:
-    linear-gradient(#222 1px, transparent 1px),
-    linear-gradient(90deg, #222 1px, transparent 1px);
+   Your React code uses:
 
-  background-size: 6.6667% 6.6667%;
+   .ludo-board
+   .board-grid
+   .home-area
+   .home-circles
+   .piece
+
+   NOT .board / .yard / .token.
+*/
+
+/* Main board */
+
+.ludo-board {
+  position: relative;
+
+  width: min(700px, 100%);
+  aspect-ratio: 1 / 1;
+
+  background: #fff;
+
+  border: 10px solid #111;
 
   box-shadow:
-    0 8px 30px rgba(0,0,0,.45);
+    0 12px 35px rgba(0, 0, 0, 0.5);
+
+  overflow: hidden;
 }
 
-/* Four traditional home areas */
+/* 15 x 15 board grid */
 
-.yard {
+.board-grid {
   position: absolute;
+  inset: 0;
+
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(15, 1fr);
+
+  background: #fff;
+}
+
+/* Every square */
+
+.cell {
+  border: 1px solid #222;
+  background: #fff;
+}
+
+/* =========================================================
+   HOME AREAS
+========================================================= */
+
+.home-area {
+  position: absolute;
+
   width: 40%;
   height: 40%;
-  padding: 20px;
 
-  border: 0 !important;
-  border-radius: 0;
+  padding: 18px;
 
-  background: white;
+  border: 6px solid rgba(0, 0, 0, 0.25);
 
-  box-shadow: inset 0 0 0 5px var(--yard-color);
+  z-index: 3;
 }
 
-/* RED - top left */
-.yard:nth-child(2) {
+/* Red - top left */
+
+.home-red {
+  top: 0;
   left: 0;
-  top: 0;
-  background: #ef4444;
-  --yard-color: #b91c1c;
+  background: #ef3e3e;
+  border-color: #b71c1c;
 }
 
-/* GREEN - top right */
-.yard:nth-child(3) {
+/* Green - top right */
+
+.home-green {
+  top: 0;
   right: 0;
-  top: 0;
-  background: #22c55e;
-  --yard-color: #15803d;
+  background: #20c55a;
+  border-color: #087f32;
 }
 
-/* YELLOW - bottom right */
-.yard:nth-child(4) {
+/* Yellow - bottom right */
+
+.home-yellow {
   right: 0;
   bottom: 0;
-  background: #facc15;
-  --yard-color: #ca8a04;
+  background: #f5c400;
+  border-color: #b18b00;
 }
 
-/* BLUE - bottom left */
-.yard:nth-child(5) {
+/* Blue - bottom left */
+
+.home-blue {
   left: 0;
   bottom: 0;
-  background: #3b82f6;
-  --yard-color: #1d4ed8;
+  background: #3485e5;
+  border-color: #1453a3;
 }
 
-.yard-title {
-  color: white !important;
-  font-size: 15px;
-  font-weight: 900;
+/* Player name */
+
+.home-title {
   text-align: center;
-  text-shadow: 1px 1px 2px #000;
+
+  font-size: 17px;
+  font-weight: 900;
+
+  color: #fff;
+
+  text-shadow:
+    1px 1px 2px rgba(0, 0, 0, 0.8);
+
+  margin-bottom: 10px;
 }
 
-/* White circles where Ludo pieces sit */
+/* =========================================================
+   PIECE HOME CIRCLES
+========================================================= */
 
-.tokens {
-  position: relative;
-  height: 100%;
-}
-
-.tokens::before,
-.tokens::after {
-  content: "";
+.home-circles {
   position: absolute;
+
+  left: 12%;
+  right: 12%;
+  top: 25%;
+  bottom: 12%;
+
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+
+  gap: 12px;
+
+  padding: 10px;
 }
 
-/* Center home */
+.home-circle {
+  background: #fff;
 
-.board-center {
+  border-radius: 50%;
+
+  border: 4px solid rgba(0, 0, 0, 0.25);
+
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================================================
+   TRACK COLORS
+========================================================= */
+
+.cell-red {
+  background: #ef3e3e !important;
+}
+
+.cell-green {
+  background: #20c55a !important;
+}
+
+.cell-yellow {
+  background: #f5c400 !important;
+}
+
+.cell-blue {
+  background: #3485e5 !important;
+}
+
+/* Home lanes */
+
+.cell.path.cell-red {
+  background: #ef3e3e !important;
+}
+
+.cell.path.cell-green {
+  background: #20c55a !important;
+}
+
+.cell.path.cell-yellow {
+  background: #f5c400 !important;
+}
+
+.cell.path.cell-blue {
+  background: #3485e5 !important;
+}
+
+/* =========================================================
+   CENTER HOME
+========================================================= */
+
+.center-home {
   position: absolute;
 
   left: 40%;
@@ -280,34 +427,74 @@ button {
   width: 20%;
   height: 20%;
 
-  z-index: 5;
+  z-index: 8;
 
-  display: grid;
-  place-items: center;
+  border: 3px solid #111;
 
-  font-size: 40px;
+  background: #fff;
 
-  background:
-    conic-gradient(
-      #22c55e 0deg 90deg,
-      #facc15 90deg 180deg,
-      #3b82f6 180deg 270deg,
-      #ef4444 270deg 360deg
-    );
-
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    0 100%
-  );
-
-  border: 3px solid #222;
+  overflow: hidden;
 }
 
-/* Player pieces */
+/*
+   Four colored triangles create the
+   classic Ludo center.
+*/
 
-.token {
+.triangle {
+  position: absolute;
+
+  width: 0;
+  height: 0;
+
+  border-style: solid;
+}
+
+/* Red */
+
+.red-triangle {
+  left: 0;
+  top: 0;
+
+  border-width: 50% 50% 50% 0;
+  border-color: transparent #ef3e3e transparent transparent;
+}
+
+/* Green */
+
+.green-triangle {
+  right: 0;
+  top: 0;
+
+  border-width: 0 50% 50% 50%;
+  border-color: transparent transparent #20c55a transparent;
+}
+
+/* Yellow */
+
+.yellow-triangle {
+  right: 0;
+  bottom: 0;
+
+  border-width: 50% 0 50% 50%;
+  border-color: transparent transparent transparent #f5c400;
+}
+
+/* Blue */
+
+.blue-triangle {
+  left: 0;
+  bottom: 0;
+
+  border-width: 50% 50% 0 50%;
+  border-color: #3485e5 transparent transparent transparent;
+}
+
+/* =========================================================
+   ACTUAL PLAYING PIECES
+========================================================= */
+
+.piece {
   position: absolute;
 
   width: 38px;
@@ -315,44 +502,63 @@ button {
 
   transform: translate(-50%, -50%);
 
-  border: 4px solid white;
   border-radius: 50%;
 
-  color: white;
+  border: 4px solid #fff;
+
+  color: #fff;
+
+  font-size: 14px;
   font-weight: 900;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 20;
+
   box-shadow:
-    0 3px 7px rgba(0,0,0,.45),
-    inset 0 2px 3px rgba(255,255,255,.5);
+    0 4px 8px rgba(0, 0, 0, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
 
-  z-index: 10;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.token:hover {
+.piece:hover:not(:disabled) {
   transform: translate(-50%, -50%) scale(1.15);
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.6),
+    0 0 0 4px rgba(255, 255, 255, 0.5);
 }
 
-.token:disabled {
+.piece:disabled {
   cursor: default;
 }
 
-.track-hint {
-  position: absolute;
-  bottom: 5px;
-  left: 0;
-  right: 0;
+/* Piece colors */
 
-  text-align: center;
-
-  font-size: 10px;
-  color: #555;
-
-  pointer-events: none;
+.piece-red {
+  background: #e53935;
 }
 
-/* =========================
+.piece-green {
+  background: #20b957;
+}
+
+.piece-yellow {
+  background: #e6b800;
+}
+
+.piece-blue {
+  background: #2878d8;
+}
+
+/* =========================================================
    SIDE PANEL
-========================= */
+========================================================= */
 
 .side-panel {
   background: #263238;
@@ -361,33 +567,111 @@ button {
   padding: 20px;
 }
 
+.side-panel h2 {
+  margin-top: 0;
+}
+
+/* =========================================================
+   DICE
+========================================================= */
+
 .dice {
   width: 100px;
   height: 100px;
 
-  margin: 0 auto 16px;
+  margin: 20px auto;
 
   display: grid;
-  place-items: center;
 
-  background: white;
-  color: #111;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  gap: 5px;
+
+  padding: 14px;
+
+  background: #fff;
 
   border-radius: 15px;
 
-  font-size: 52px;
-  font-weight: 900;
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.3);
 }
+
+.dot {
+  width: 15px;
+  height: 15px;
+
+  background: #111;
+
+  border-radius: 50%;
+
+  align-self: center;
+  justify-self: center;
+}
+
+/* Dice positions */
+
+.dot-0 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.dot-1 {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.dot-2 {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.dot-3 {
+  grid-column: 3;
+  grid-row: 3;
+}
+
+.dot-4 {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.dot-5 {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.dot-6 {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.dot-8 {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+/* =========================================================
+   DICE BUTTON
+========================================================= */
 
 .dice-btn {
   width: 100%;
+  font-size: 16px;
 }
 
-.turn {
-  text-align: center;
-  font-weight: 800;
-  margin: 15px 0;
+.dice-btn:not(:disabled) {
+  background: #2e7d32;
 }
+
+.dice-btn:not(:disabled):hover {
+  background: #388e3c;
+}
+
+/* =========================================================
+   PLAYERS
+========================================================= */
 
 .players-list {
   display: grid;
@@ -400,45 +684,52 @@ button {
   align-items: center;
   gap: 9px;
 
-  padding: 10px;
+  padding: 11px;
 
   background: #172027;
+
   border-radius: 8px;
+}
+
+.player-row small {
+  color: #aaa;
+  margin-left: auto;
+}
+
+.active-player {
+  outline: 2px solid #81c784;
 }
 
 .dot {
   width: 14px;
   height: 14px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.waiting,
-.winner {
-  margin: 18px auto;
-  max-width: 800px;
-
-  text-align: center;
-
-  padding: 22px;
-
-  border-radius: 14px;
-
-  background: #263238;
-  border: 2px solid #455a64;
-}
+/* =========================================================
+   LOADING
+========================================================= */
 
 .loading {
   min-height: 100vh;
+
   display: grid;
+
   place-items: center;
+
+  text-align: center;
 }
 
-/* =========================
+.loading-dice {
+  font-size: 60px;
+}
+
+/* =========================================================
    MOBILE
-========================= */
+========================================================= */
 
 @media (max-width: 800px) {
-
   .mode-grid {
     grid-template-columns: 1fr;
   }
@@ -447,9 +738,11 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .board {
+  .ludo-board {
     width: 100%;
-    min-width: 0;
+    max-width: 600px;
+
+    border-width: 5px;
   }
 
   .side-panel {
@@ -464,9 +757,30 @@ button {
     padding: 40px 0 25px;
   }
 
-  .token {
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .home-area {
+    border-width: 4px;
+    padding: 8px;
+  }
+
+  .home-title {
+    font-size: 11px;
+  }
+
+  .home-circles {
+    gap: 5px;
+    padding: 5px;
+  }
+
+  .piece {
     width: 28px;
     height: 28px;
+
     font-size: 10px;
+
+    border-width: 3px;
   }
 }
